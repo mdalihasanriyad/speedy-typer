@@ -12,7 +12,7 @@ const DURATIONS = [15, 30, 60, 120];
 
 const Index = () => {
   const [duration, setDuration] = useState(30);
-  const { state, handleKeyDown, reset, getStats } = useTypingEngine(duration);
+  const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(duration);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

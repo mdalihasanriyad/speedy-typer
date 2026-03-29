@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generateWords } from "@/data/words";
 
+export interface WpmSnapshot {
+  second: number;
+  wpm: number;
+  raw: number;
+}
+
 interface TypingEngineState {
   words: string[];
   currentWordIndex: number;
@@ -11,6 +17,23 @@ interface TypingEngineState {
   timeLeft: number;
   isRunning: boolean;
   isFinished: boolean;
+}
+
+function calcCorrectChars(typedHistory: string[], words: string[]) {
+  let correct = 0;
+  let total = 0;
+  typedHistory.forEach((typed, i) => {
+    const target = words[i];
+    if (typed === target) {
+      correct += typed.length;
+    } else {
+      for (let c = 0; c < typed.length; c++) {
+        if (c < target.length && typed[c] === target[c]) correct++;
+      }
+    }
+    total += typed.length;
+  });
+  return { correct, total };
 }
 
 export function useTypingEngine(duration: number) {
@@ -27,9 +50,13 @@ export function useTypingEngine(duration: number) {
   }));
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const wpmHistoryRef = useRef<WpmSnapshot[]>([]);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   const reset = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
+    wpmHistoryRef.current = [];
     setState({
       words: generateWords(200),
       currentWordIndex: 0,
@@ -52,6 +79,14 @@ export function useTypingEngine(duration: number) {
       timerRef.current = setInterval(() => {
         setState((prev) => {
           const newTimeLeft = prev.timeLeft - 1;
+          const elapsed = duration - newTimeLeft;
+
+          // Record WPM snapshot
+          const { correct, total } = calcCorrectChars(prev.typedHistory, prev.words);
+          const wpm = Math.round((correct / 5) / (elapsed / 60));
+          const raw = Math.round((total / 5) / (elapsed / 60));
+          wpmHistoryRef.current.push({ second: elapsed, wpm, raw });
+
           if (newTimeLeft <= 0) {
             if (timerRef.current) clearInterval(timerRef.current);
             timerRef.current = null;
@@ -67,7 +102,7 @@ export function useTypingEngine(duration: number) {
         timerRef.current = null;
       }
     };
-  }, [state.isRunning, state.isFinished]);
+  }, [state.isRunning, state.isFinished, duration]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -121,24 +156,11 @@ export function useTypingEngine(duration: number) {
   );
 
   const getStats = useCallback(() => {
-    const allTyped = [...state.typedHistory];
-    if (state.currentInput) allTyped.push(state.currentInput);
+    const { correct: correctChars, total: totalChars } = calcCorrectChars(state.typedHistory, state.words);
 
-    let correctChars = 0;
-    let totalChars = 0;
     let correctWords = 0;
-
     state.typedHistory.forEach((typed, i) => {
-      const target = state.words[i];
-      if (typed === target) {
-        correctWords++;
-        correctChars += typed.length;
-      } else {
-        for (let c = 0; c < typed.length; c++) {
-          if (c < target.length && typed[c] === target[c]) correctChars++;
-        }
-      }
-      totalChars += typed.length;
+      if (typed === state.words[i]) correctWords++;
     });
 
     const elapsed = duration - state.timeLeft || 1;
@@ -149,5 +171,7 @@ export function useTypingEngine(duration: number) {
     return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length };
   }, [state, duration]);
 
-  return { state, handleKeyDown, reset, getStats };
+  const getWpmHistory = useCallback(() => wpmHistoryRef.current, []);
+
+  return { state, handleKeyDown, reset, getStats, getWpmHistory };
 }

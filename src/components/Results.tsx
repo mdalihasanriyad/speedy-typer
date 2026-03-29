@@ -1,24 +1,35 @@
 import { RotateCcw } from "lucide-react";
+import WpmChart from "./WpmChart";
+import type { WpmSnapshot } from "@/hooks/useTypingEngine";
 
 interface ResultsProps {
   wpm: number;
   rawWpm: number;
   accuracy: number;
   duration: number;
+  wpmHistory: WpmSnapshot[];
   onRestart: () => void;
 }
 
-const Results = ({ wpm, rawWpm, accuracy, duration, onRestart }: ResultsProps) => {
+const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart }: ResultsProps) => {
   return (
-    <div className="flex flex-col items-center gap-8 animate-in fade-in duration-500">
-      <div className="flex gap-16 items-end">
-        <div className="flex flex-col items-center">
-          <span className="text-sub text-sm">wpm</span>
-          <span className="text-6xl font-bold text-primary">{wpm}</span>
+    <div className="w-full flex flex-col items-center gap-8 animate-in fade-in duration-500">
+      <div className="w-full flex gap-8 items-start">
+        {/* Left stats */}
+        <div className="flex flex-col gap-4 shrink-0">
+          <div>
+            <span className="text-sub text-sm block">wpm</span>
+            <span className="text-5xl font-bold text-primary">{wpm}</span>
+          </div>
+          <div>
+            <span className="text-sub text-sm block">acc</span>
+            <span className="text-5xl font-bold text-primary">{accuracy}%</span>
+          </div>
         </div>
-        <div className="flex flex-col items-center">
-          <span className="text-sub text-sm">acc</span>
-          <span className="text-6xl font-bold text-primary">{accuracy}%</span>
+
+        {/* Chart */}
+        <div className="flex-1 min-w-0">
+          <WpmChart data={wpmHistory} />
         </div>
       </div>
 

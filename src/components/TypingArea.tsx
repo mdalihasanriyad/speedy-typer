@@ -9,7 +9,7 @@ interface TypingAreaProps {
   isRunning: boolean;
 }
 
-const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFinished }: TypingAreaProps) => {
+const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFinished, isRunning }: TypingAreaProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeWordRef = useRef<HTMLDivElement>(null);
   const caretRef = useRef<HTMLDivElement>(null);

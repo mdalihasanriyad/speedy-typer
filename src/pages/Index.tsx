@@ -77,6 +77,7 @@ const Index = () => {
                 currentInput={state.currentInput}
                 typedHistory={state.typedHistory}
                 isFinished={state.isFinished}
+                isRunning={state.isRunning}
               />
             </div>
 

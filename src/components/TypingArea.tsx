@@ -6,9 +6,10 @@ interface TypingAreaProps {
   currentInput: string;
   typedHistory: string[];
   isFinished: boolean;
+  isRunning: boolean;
 }
 
-const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFinished }: TypingAreaProps) => {
+const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFinished, isRunning }: TypingAreaProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeWordRef = useRef<HTMLDivElement>(null);
   const caretRef = useRef<HTMLDivElement>(null);
@@ -135,7 +136,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
       {/* Smooth caret */}
       <div
         ref={caretRef}
-        className="absolute w-[2.5px] bg-caret rounded-sm pointer-events-none z-10"
+        className={`absolute w-[2.5px] bg-caret rounded-sm pointer-events-none z-10 ${!isRunning ? "animate-caret-blink" : ""}`}
         style={{
           height: "1.4em",
           left: `${caretPos.left}px`,

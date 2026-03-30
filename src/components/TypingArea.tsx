@@ -6,6 +6,7 @@ interface TypingAreaProps {
   currentInput: string;
   typedHistory: string[];
   isFinished: boolean;
+  isRunning: boolean;
 }
 
 const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFinished }: TypingAreaProps) => {

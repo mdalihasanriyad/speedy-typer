@@ -92,6 +92,7 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         blink: "blink 1s step-end infinite",
+        "caret-blink": "caret-smooth 1s ease-in-out infinite",
       },
     },
   },

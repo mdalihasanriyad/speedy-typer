@@ -1,6 +1,8 @@
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Crown } from "lucide-react";
 import WpmChart from "./WpmChart";
-import type { WpmSnapshot } from "@/hooks/useTypingEngine";
+import type { WpmSnapshot, TestMode } from "@/hooks/useTypingEngine";
+import { useEffect, useState } from "react";
+import { getPersonalBest, savePersonalBest } from "@/lib/personalBest";
 
 interface ResultsProps {
   wpm: number;
@@ -9,9 +11,20 @@ interface ResultsProps {
   duration: number;
   wpmHistory: WpmSnapshot[];
   onRestart: () => void;
+  mode: TestMode;
+  modeValue: number;
 }
 
-const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart }: ResultsProps) => {
+const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart, mode, modeValue }: ResultsProps) => {
+  const [isNewBest, setIsNewBest] = useState(false);
+  const [personalBest, setPersonalBest] = useState<number | null>(null);
+
+  useEffect(() => {
+    const newRecord = savePersonalBest(mode, modeValue, wpm);
+    setIsNewBest(newRecord);
+    setPersonalBest(getPersonalBest(mode, modeValue));
+  }, [mode, modeValue, wpm]);
+
   return (
     <div className="w-full flex flex-col items-center gap-8 animate-in fade-in duration-500">
       <div className="w-full flex gap-8 items-start">
@@ -20,6 +33,11 @@ const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart }: Res
           <div>
             <span className="text-sub text-sm block">wpm</span>
             <span className="text-5xl font-bold text-primary">{wpm}</span>
+            {isNewBest && (
+              <span className="flex items-center gap-1 text-xs text-caret mt-1">
+                <Crown className="w-3 h-3" /> new best!
+              </span>
+            )}
           </div>
           <div>
             <span className="text-sub text-sm block">acc</span>
@@ -42,6 +60,12 @@ const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart }: Res
           <span className="text-xs">time</span>
           <span className="text-lg text-foreground">{duration}s</span>
         </div>
+        {personalBest !== null && (
+          <div className="flex flex-col items-center">
+            <span className="text-xs flex items-center gap-1"><Crown className="w-3 h-3" /> pb</span>
+            <span className="text-lg text-foreground">{personalBest}</span>
+          </div>
+        )}
       </div>
 
       <button

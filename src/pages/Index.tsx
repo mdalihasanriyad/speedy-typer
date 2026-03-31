@@ -55,6 +55,8 @@ const Index = () => {
             duration={state.elapsed}
             wpmHistory={getWpmHistory()}
             onRestart={reset}
+            mode={mode}
+            modeValue={value}
           />
         ) : (
           <>

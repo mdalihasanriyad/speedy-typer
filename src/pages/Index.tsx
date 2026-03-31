@@ -1,18 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
-import TimerSelector from "@/components/TimerSelector";
+import TimerSelector, { TIME_VALUES, WORD_VALUES } from "@/components/TimerSelector";
 import TypingArea from "@/components/TypingArea";
 import Results from "@/components/Results";
-import { useTypingEngine } from "@/hooks/useTypingEngine";
+import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";
 import { RotateCcw } from "lucide-react";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/700.css";
 
-const DURATIONS = [15, 30, 60, 120];
-
 const Index = () => {
-  const [duration, setDuration] = useState(30);
-  const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(duration);
+  const [mode, setMode] = useState<TestMode>("time");
+  const [timeValue, setTimeValue] = useState(30);
+  const [wordValue, setWordValue] = useState(25);
+
+  const value = mode === "time" ? timeValue : wordValue;
+  const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
+
+  const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(mode, value);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +32,6 @@ const Index = () => {
     return () => window.removeEventListener("keydown", handler);
   }, [handleKeyDown, reset]);
 
-  // Focus management
   useEffect(() => {
     containerRef.current?.focus();
   }, []);
@@ -49,7 +52,7 @@ const Index = () => {
             wpm={stats.wpm}
             rawWpm={stats.rawWpm}
             accuracy={stats.accuracy}
-            duration={duration}
+            duration={state.elapsed}
             wpmHistory={getWpmHistory()}
             onRestart={reset}
           />
@@ -57,15 +60,20 @@ const Index = () => {
           <>
             <div className="w-full flex items-center justify-between mb-8">
               <TimerSelector
-                durations={DURATIONS}
-                selected={duration}
-                onSelect={(d) => {
-                  setDuration(d);
+                mode={mode}
+                onModeChange={setMode}
+                values={values}
+                selected={value}
+                onSelect={(v) => {
+                  if (mode === "time") setTimeValue(v);
+                  else setWordValue(v);
                 }}
               />
               {state.isRunning && (
                 <span className="text-3xl font-bold text-primary tabular-nums">
-                  {state.timeLeft}
+                  {mode === "time"
+                    ? state.timeLeft
+                    : `${state.currentWordIndex}/${value}`}
                 </span>
               )}
             </div>

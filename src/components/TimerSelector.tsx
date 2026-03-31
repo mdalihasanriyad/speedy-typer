@@ -1,14 +1,39 @@
+import type { TestMode } from "@/hooks/useTypingEngine";
+
 interface TimerSelectorProps {
-  durations: number[];
+  mode: TestMode;
+  onModeChange: (mode: TestMode) => void;
+  values: number[];
   selected: number;
-  onSelect: (duration: number) => void;
+  onSelect: (value: number) => void;
 }
 
-const TimerSelector = ({ durations, selected, onSelect }: TimerSelectorProps) => {
+const TIME_VALUES = [15, 30, 60, 120];
+const WORD_VALUES = [10, 25, 50, 100];
+
+const TimerSelector = ({ mode, onModeChange, values, selected, onSelect }: TimerSelectorProps) => {
   return (
     <div className="flex items-center gap-4 text-sub text-sm">
-      <span className="text-muted-foreground">time</span>
-      {durations.map((d) => (
+      <div className="flex items-center gap-2 mr-2">
+        <button
+          onClick={() => onModeChange("time")}
+          className={`transition-colors hover:text-foreground ${
+            mode === "time" ? "text-primary" : ""
+          }`}
+        >
+          time
+        </button>
+        <span className="text-muted-foreground">|</span>
+        <button
+          onClick={() => onModeChange("words")}
+          className={`transition-colors hover:text-foreground ${
+            mode === "words" ? "text-primary" : ""
+          }`}
+        >
+          words
+        </button>
+      </div>
+      {values.map((d) => (
         <button
           key={d}
           onClick={() => onSelect(d)}
@@ -23,4 +48,5 @@ const TimerSelector = ({ durations, selected, onSelect }: TimerSelectorProps) =>
   );
 };
 
+export { TIME_VALUES, WORD_VALUES };
 export default TimerSelector;

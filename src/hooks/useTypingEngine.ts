@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generateWords } from "@/data/words";
 
+export type TestMode = "time" | "words";
+
 export interface WpmSnapshot {
   second: number;
   wpm: number;
@@ -15,6 +17,7 @@ interface TypingEngineState {
   currentInput: string;
   startTime: number | null;
   timeLeft: number;
+  elapsed: number;
   isRunning: boolean;
   isFinished: boolean;
 }
@@ -36,15 +39,19 @@ function calcCorrectChars(typedHistory: string[], words: string[]) {
   return { correct, total };
 }
 
-export function useTypingEngine(duration: number) {
+export function useTypingEngine(mode: TestMode, value: number) {
+  const isTimeMode = mode === "time";
+  const wordCount = isTimeMode ? 200 : value;
+
   const [state, setState] = useState<TypingEngineState>(() => ({
-    words: generateWords(200),
+    words: generateWords(wordCount),
     currentWordIndex: 0,
     currentCharIndex: 0,
     typedHistory: [],
     currentInput: "",
     startTime: null,
-    timeLeft: duration,
+    timeLeft: isTimeMode ? value : 0,
+    elapsed: 0,
     isRunning: false,
     isFinished: false,
   }));
@@ -58,41 +65,46 @@ export function useTypingEngine(duration: number) {
     if (timerRef.current) clearInterval(timerRef.current);
     wpmHistoryRef.current = [];
     setState({
-      words: generateWords(200),
+      words: generateWords(wordCount),
       currentWordIndex: 0,
       currentCharIndex: 0,
       typedHistory: [],
       currentInput: "",
       startTime: null,
-      timeLeft: duration,
+      timeLeft: isTimeMode ? value : 0,
+      elapsed: 0,
       isRunning: false,
       isFinished: false,
     });
-  }, [duration]);
+  }, [value, isTimeMode, wordCount]);
 
   useEffect(() => {
     reset();
-  }, [duration, reset]);
+  }, [value, mode, reset]);
 
   useEffect(() => {
     if (state.isRunning && !timerRef.current) {
       timerRef.current = setInterval(() => {
         setState((prev) => {
-          const newTimeLeft = prev.timeLeft - 1;
-          const elapsed = duration - newTimeLeft;
+          if (prev.isFinished) return prev;
 
-          // Record WPM snapshot
+          const newElapsed = prev.elapsed + 1;
           const { correct, total } = calcCorrectChars(prev.typedHistory, prev.words);
-          const wpm = Math.round((correct / 5) / (elapsed / 60));
-          const raw = Math.round((total / 5) / (elapsed / 60));
-          wpmHistoryRef.current.push({ second: elapsed, wpm, raw });
+          const wpm = Math.round((correct / 5) / (newElapsed / 60));
+          const raw = Math.round((total / 5) / (newElapsed / 60));
+          wpmHistoryRef.current.push({ second: newElapsed, wpm, raw });
 
-          if (newTimeLeft <= 0) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            timerRef.current = null;
-            return { ...prev, timeLeft: 0, isRunning: false, isFinished: true };
+          if (isTimeMode) {
+            const newTimeLeft = prev.timeLeft - 1;
+            if (newTimeLeft <= 0) {
+              if (timerRef.current) clearInterval(timerRef.current);
+              timerRef.current = null;
+              return { ...prev, timeLeft: 0, elapsed: newElapsed, isRunning: false, isFinished: true };
+            }
+            return { ...prev, timeLeft: newTimeLeft, elapsed: newElapsed };
           }
-          return { ...prev, timeLeft: newTimeLeft };
+
+          return { ...prev, elapsed: newElapsed };
         });
       }, 1000);
     }
@@ -102,11 +114,11 @@ export function useTypingEngine(duration: number) {
         timerRef.current = null;
       }
     };
-  }, [state.isRunning, state.isFinished, duration]);
+  }, [state.isRunning, state.isFinished, isTimeMode]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (state.isFinished) return;
+      if (stateRef.current.isFinished) return;
 
       if (e.key.length === 1 || e.key === "Backspace" || e.key === " ") {
         e.preventDefault();
@@ -143,6 +155,16 @@ export function useTypingEngine(duration: number) {
             next.currentWordIndex += 1;
             next.currentInput = "";
             next.currentCharIndex = 0;
+
+            // In words mode, finish when all words are typed
+            if (!isTimeMode && next.currentWordIndex >= next.words.length) {
+              if (timerRef.current) clearInterval(timerRef.current);
+              timerRef.current = null;
+              const finalElapsed = next.startTime ? (Date.now() - next.startTime) / 1000 : next.elapsed;
+              next.elapsed = Math.round(finalElapsed);
+              next.isRunning = false;
+              next.isFinished = true;
+            }
           }
         } else if (e.key.length === 1) {
           next.currentInput += e.key;
@@ -152,7 +174,7 @@ export function useTypingEngine(duration: number) {
         return next;
       });
     },
-    [state.isFinished]
+    [isTimeMode]
   );
 
   const getStats = useCallback(() => {
@@ -163,13 +185,13 @@ export function useTypingEngine(duration: number) {
       if (typed === state.words[i]) correctWords++;
     });
 
-    const elapsed = duration - state.timeLeft || 1;
+    const elapsed = state.elapsed || 1;
     const wpm = Math.round((correctChars / 5) / (elapsed / 60));
     const rawWpm = Math.round((totalChars / 5) / (elapsed / 60));
     const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
 
     return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length };
-  }, [state, duration]);
+  }, [state]);
 
   const getWpmHistory = useCallback(() => wpmHistoryRef.current, []);
 

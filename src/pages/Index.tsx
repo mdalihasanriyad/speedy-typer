@@ -91,6 +91,19 @@ const Index = () => {
               />
             </div>
 
+            {/* Progress bar */}
+            <div className="w-full h-[3px] rounded-full bg-secondary mt-4 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary"
+                style={{
+                  width: `${mode === "time"
+                    ? ((1 - state.timeLeft / value) * 100)
+                    : ((state.currentWordIndex / value) * 100)}%`,
+                  transition: "width 300ms ease-out",
+                }}
+              />
+            </div>
+
             <button
               onClick={reset}
               className="mt-8 text-sub hover:text-foreground transition-colors p-3"

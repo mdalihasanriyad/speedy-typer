@@ -3,43 +3,34 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  /* Default: Dark (MonkeyType classic) */
+  :root,
+  [data-theme="dark"] {
     --background: 228 7% 14%;
     --foreground: 228 7% 56%;
-
     --card: 228 7% 17%;
     --card-foreground: 228 7% 56%;
-
     --popover: 228 7% 17%;
     --popover-foreground: 228 7% 56%;
-
     --primary: 43 72% 49%;
     --primary-foreground: 228 7% 14%;
-
     --secondary: 228 7% 20%;
     --secondary-foreground: 228 7% 56%;
-
     --muted: 228 7% 20%;
     --muted-foreground: 228 7% 40%;
-
     --accent: 43 72% 49%;
     --accent-foreground: 228 7% 14%;
-
     --destructive: 0 65% 52%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 228 7% 22%;
     --input: 228 7% 22%;
     --ring: 43 72% 49%;
-
     --radius: 0.5rem;
-
     --text-correct: 46 30% 80%;
     --text-incorrect: 0 65% 52%;
     --text-extra: 0 50% 40%;
     --caret: 43 72% 49%;
     --sub: 228 7% 40%;
-
     --sidebar-background: 228 7% 14%;
     --sidebar-foreground: 228 7% 56%;
     --sidebar-primary: 43 72% 49%;
@@ -48,6 +39,118 @@
     --sidebar-accent-foreground: 228 7% 56%;
     --sidebar-border: 228 7% 22%;
     --sidebar-ring: 43 72% 49%;
+  }
+
+  /* Light / Serika Light */
+  [data-theme="light"] {
+    --background: 44 23% 93%;
+    --foreground: 200 4% 52%;
+    --card: 44 23% 90%;
+    --card-foreground: 200 4% 52%;
+    --popover: 44 23% 90%;
+    --popover-foreground: 200 4% 52%;
+    --primary: 0 0% 14%;
+    --primary-foreground: 44 23% 93%;
+    --secondary: 44 18% 86%;
+    --secondary-foreground: 200 4% 52%;
+    --muted: 44 18% 86%;
+    --muted-foreground: 200 4% 62%;
+    --accent: 0 0% 14%;
+    --accent-foreground: 44 23% 93%;
+    --destructive: 0 65% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 44 18% 82%;
+    --input: 44 18% 82%;
+    --ring: 0 0% 14%;
+    --text-correct: 0 0% 14%;
+    --text-incorrect: 0 65% 52%;
+    --text-extra: 0 50% 70%;
+    --caret: 0 0% 14%;
+    --sub: 200 4% 62%;
+  }
+
+  /* Ocean */
+  [data-theme="ocean"] {
+    --background: 215 32% 12%;
+    --foreground: 215 20% 54%;
+    --card: 215 32% 15%;
+    --card-foreground: 215 20% 54%;
+    --popover: 215 32% 15%;
+    --popover-foreground: 215 20% 54%;
+    --primary: 190 70% 50%;
+    --primary-foreground: 215 32% 12%;
+    --secondary: 215 28% 18%;
+    --secondary-foreground: 215 20% 54%;
+    --muted: 215 28% 18%;
+    --muted-foreground: 215 20% 38%;
+    --accent: 190 70% 50%;
+    --accent-foreground: 215 32% 12%;
+    --destructive: 0 65% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 28% 22%;
+    --input: 215 28% 22%;
+    --ring: 190 70% 50%;
+    --text-correct: 190 30% 82%;
+    --text-incorrect: 0 65% 52%;
+    --text-extra: 0 50% 40%;
+    --caret: 190 70% 50%;
+    --sub: 215 20% 38%;
+  }
+
+  /* Forest */
+  [data-theme="forest"] {
+    --background: 150 12% 12%;
+    --foreground: 150 8% 52%;
+    --card: 150 12% 15%;
+    --card-foreground: 150 8% 52%;
+    --popover: 150 12% 15%;
+    --popover-foreground: 150 8% 52%;
+    --primary: 80 55% 48%;
+    --primary-foreground: 150 12% 12%;
+    --secondary: 150 10% 18%;
+    --secondary-foreground: 150 8% 52%;
+    --muted: 150 10% 18%;
+    --muted-foreground: 150 8% 38%;
+    --accent: 80 55% 48%;
+    --accent-foreground: 150 12% 12%;
+    --destructive: 0 65% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 150 10% 22%;
+    --input: 150 10% 22%;
+    --ring: 80 55% 48%;
+    --text-correct: 80 25% 78%;
+    --text-incorrect: 0 65% 52%;
+    --text-extra: 0 50% 40%;
+    --caret: 80 55% 48%;
+    --sub: 150 8% 38%;
+  }
+
+  /* Lavender */
+  [data-theme="lavender"] {
+    --background: 270 14% 14%;
+    --foreground: 270 10% 54%;
+    --card: 270 14% 17%;
+    --card-foreground: 270 10% 54%;
+    --popover: 270 14% 17%;
+    --popover-foreground: 270 10% 54%;
+    --primary: 280 60% 65%;
+    --primary-foreground: 270 14% 14%;
+    --secondary: 270 12% 20%;
+    --secondary-foreground: 270 10% 54%;
+    --muted: 270 12% 20%;
+    --muted-foreground: 270 10% 38%;
+    --accent: 280 60% 65%;
+    --accent-foreground: 270 14% 14%;
+    --destructive: 0 65% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 12% 24%;
+    --input: 270 12% 24%;
+    --ring: 280 60% 65%;
+    --text-correct: 280 25% 82%;
+    --text-incorrect: 0 65% 52%;
+    --text-extra: 0 50% 40%;
+    --caret: 280 60% 65%;
+    --sub: 270 10% 38%;
   }
 }
 

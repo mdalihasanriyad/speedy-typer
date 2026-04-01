@@ -16,7 +16,7 @@ interface ResultsProps {
   modeValue: number;
 }
 
-const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart, mode, modeValue }: ResultsProps) => {
+const Results = ({ wpm, rawWpm, accuracy, duration, totalErrors, wpmHistory, onRestart, mode, modeValue }: ResultsProps) => {
   const [isNewBest, setIsNewBest] = useState(false);
   const [personalBest, setPersonalBest] = useState<number | null>(null);
 

@@ -9,6 +9,7 @@ interface ResultsProps {
   rawWpm: number;
   accuracy: number;
   duration: number;
+  totalErrors: number;
   wpmHistory: WpmSnapshot[];
   onRestart: () => void;
   mode: TestMode;

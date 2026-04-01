@@ -62,6 +62,7 @@ const Index = () => {
             rawWpm={stats.rawWpm}
             accuracy={stats.accuracy}
             duration={state.elapsed}
+            totalErrors={stats.totalErrors}
             wpmHistory={getWpmHistory()}
             onRestart={reset}
             mode={mode}

@@ -61,6 +61,10 @@ const Results = ({ wpm, rawWpm, accuracy, duration, totalErrors, wpmHistory, onR
           <span className="text-xs">time</span>
           <span className="text-lg text-foreground">{duration}s</span>
         </div>
+        <div className="flex flex-col items-center">
+          <span className="text-xs">errors</span>
+          <span className="text-lg text-foreground">{totalErrors}</span>
+        </div>
         {personalBest !== null && (
           <div className="flex flex-col items-center">
             <span className="text-xs flex items-center gap-1"><Crown className="w-3 h-3" /> pb</span>

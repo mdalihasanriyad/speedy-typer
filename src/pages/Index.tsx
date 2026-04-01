@@ -19,13 +19,22 @@ const Index = () => {
   const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(mode, value);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const tabPressedRef = useRef(false);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Tab") {
         e.preventDefault();
+        tabPressedRef.current = true;
+        return;
+      }
+      if (e.key === "Enter" && tabPressedRef.current) {
+        e.preventDefault();
+        tabPressedRef.current = false;
         reset();
         return;
       }
+      tabPressedRef.current = false;
       handleKeyDown(e);
     };
     window.addEventListener("keydown", handler);
@@ -53,6 +62,7 @@ const Index = () => {
             rawWpm={stats.rawWpm}
             accuracy={stats.accuracy}
             duration={state.elapsed}
+            totalErrors={stats.totalErrors}
             wpmHistory={getWpmHistory()}
             onRestart={reset}
             mode={mode}

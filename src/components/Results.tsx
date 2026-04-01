@@ -9,13 +9,14 @@ interface ResultsProps {
   rawWpm: number;
   accuracy: number;
   duration: number;
+  totalErrors: number;
   wpmHistory: WpmSnapshot[];
   onRestart: () => void;
   mode: TestMode;
   modeValue: number;
 }
 
-const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart, mode, modeValue }: ResultsProps) => {
+const Results = ({ wpm, rawWpm, accuracy, duration, totalErrors, wpmHistory, onRestart, mode, modeValue }: ResultsProps) => {
   const [isNewBest, setIsNewBest] = useState(false);
   const [personalBest, setPersonalBest] = useState<number | null>(null);
 
@@ -59,6 +60,10 @@ const Results = ({ wpm, rawWpm, accuracy, duration, wpmHistory, onRestart, mode,
         <div className="flex flex-col items-center">
           <span className="text-xs">time</span>
           <span className="text-lg text-foreground">{duration}s</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-xs">errors</span>
+          <span className="text-lg text-foreground">{totalErrors}</span>
         </div>
         {personalBest !== null && (
           <div className="flex flex-col items-center">

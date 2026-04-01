@@ -72,11 +72,16 @@ const Index = () => {
                 }}
               />
               {state.isRunning && (
-                <span className="text-3xl font-bold text-primary tabular-nums">
-                  {mode === "time"
-                    ? state.timeLeft
-                    : `${state.currentWordIndex}/${value}`}
-                </span>
+                <div className="flex items-center gap-6">
+                  <span className="text-lg text-sub tabular-nums">
+                    {stats.wpm} <span className="text-xs">wpm</span>
+                  </span>
+                  <span className="text-3xl font-bold text-primary tabular-nums">
+                    {mode === "time"
+                      ? state.timeLeft
+                      : `${state.currentWordIndex}/${value}`}
+                  </span>
+                </div>
               )}
             </div>
 

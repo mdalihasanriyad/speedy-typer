@@ -123,6 +123,13 @@ const Index = () => {
               />
             </div>
 
+            {/* Live CPS chart */}
+            {state.isRunning && (
+              <div className="w-full mt-4">
+                <LiveCpsChart data={getCpsHistory()} />
+              </div>
+            )}
+
             <button
               onClick={reset}
               className="mt-8 text-sub hover:text-foreground transition-colors p-3"

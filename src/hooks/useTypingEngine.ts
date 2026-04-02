@@ -9,6 +9,11 @@ export interface WpmSnapshot {
   raw: number;
 }
 
+export interface CpsSnapshot {
+  second: number;
+  cps: number;
+}
+
 interface TypingEngineState {
   words: string[];
   currentWordIndex: number;

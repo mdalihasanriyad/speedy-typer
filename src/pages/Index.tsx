@@ -19,7 +19,7 @@ const Index = () => {
   const value = mode === "time" ? timeValue : wordValue;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
 
-  const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(mode, value);
+  const { state, handleKeyDown, reset, getStats, getWpmHistory, getCpsHistory } = useTypingEngine(mode, value);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const tabPressedRef = useRef(false);

@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import TimerSelector, { TIME_VALUES, WORD_VALUES } from "@/components/TimerSelector";
 import TypingArea from "@/components/TypingArea";
 import Results from "@/components/Results";
+import LiveCpsChart from "@/components/LiveCpsChart";
 import Leaderboard from "@/components/Leaderboard";
 import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";
 import { RotateCcw } from "lucide-react";
@@ -18,7 +19,7 @@ const Index = () => {
   const value = mode === "time" ? timeValue : wordValue;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
 
-  const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(mode, value);
+  const { state, handleKeyDown, reset, getStats, getWpmHistory, getCpsHistory } = useTypingEngine(mode, value);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const tabPressedRef = useRef(false);
@@ -121,6 +122,13 @@ const Index = () => {
                 }}
               />
             </div>
+
+            {/* Live CPS chart */}
+            {state.isRunning && (
+              <div className="w-full mt-4">
+                <LiveCpsChart data={getCpsHistory()} />
+              </div>
+            )}
 
             <button
               onClick={reset}

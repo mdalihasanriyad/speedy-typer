@@ -21,7 +21,7 @@ const Results = ({ wpm, rawWpm, accuracy, duration, totalErrors, wpmHistory, onR
   const [personalBest, setPersonalBest] = useState<number | null>(null);
 
   useEffect(() => {
-    const newRecord = savePersonalBest(mode, modeValue, wpm);
+    const newRecord = savePersonalBest(mode, modeValue, wpm, accuracy);
     setIsNewBest(newRecord);
     setPersonalBest(getPersonalBest(mode, modeValue));
   }, [mode, modeValue, wpm]);

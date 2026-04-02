@@ -3,12 +3,14 @@ import Header from "@/components/Header";
 import TimerSelector, { TIME_VALUES, WORD_VALUES } from "@/components/TimerSelector";
 import TypingArea from "@/components/TypingArea";
 import Results from "@/components/Results";
+import Leaderboard from "@/components/Leaderboard";
 import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";
 import { RotateCcw } from "lucide-react";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/700.css";
 
 const Index = () => {
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [mode, setMode] = useState<TestMode>("time");
   const [timeValue, setTimeValue] = useState(30);
   const [wordValue, setWordValue] = useState(25);
@@ -53,7 +55,8 @@ const Index = () => {
       tabIndex={0}
       className="min-h-screen flex flex-col outline-none cursor-default"
     >
-      <Header />
+      <Header onLeaderboard={() => setLeaderboardOpen(true)} />
+      <Leaderboard open={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />
 
       <div className="flex-1 flex flex-col items-center justify-center px-8 max-w-[900px] w-full mx-auto -mt-16">
         {state.isFinished ? (

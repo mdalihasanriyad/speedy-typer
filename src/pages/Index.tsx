@@ -55,7 +55,8 @@ const Index = () => {
       tabIndex={0}
       className="min-h-screen flex flex-col outline-none cursor-default"
     >
-      <Header />
+      <Header onLeaderboard={() => setLeaderboardOpen(true)} />
+      <Leaderboard open={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />
 
       <div className="flex-1 flex flex-col items-center justify-center px-8 max-w-[900px] w-full mx-auto -mt-16">
         {state.isFinished ? (

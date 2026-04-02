@@ -60,16 +60,21 @@ export function useTypingEngine(mode: TestMode, value: number) {
     elapsed: 0,
     isRunning: false,
     isFinished: false,
+    totalCharsTyped: 0,
   }));
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const wpmHistoryRef = useRef<WpmSnapshot[]>([]);
+  const cpsHistoryRef = useRef<CpsSnapshot[]>([]);
+  const prevCharsRef = useRef(0);
   const stateRef = useRef(state);
   stateRef.current = state;
 
   const reset = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     wpmHistoryRef.current = [];
+    cpsHistoryRef.current = [];
+    prevCharsRef.current = 0;
     setState({
       words: generateWords(wordCount),
       currentWordIndex: 0,
@@ -81,6 +86,7 @@ export function useTypingEngine(mode: TestMode, value: number) {
       elapsed: 0,
       isRunning: false,
       isFinished: false,
+      totalCharsTyped: 0,
     });
   }, [value, isTimeMode, wordCount]);
 
@@ -99,6 +105,11 @@ export function useTypingEngine(mode: TestMode, value: number) {
           const wpm = Math.round((correct / 5) / (newElapsed / 60));
           const raw = Math.round((total / 5) / (newElapsed / 60));
           wpmHistoryRef.current.push({ second: newElapsed, wpm, raw });
+
+          // CPS: chars typed since last second
+          const cps = prev.totalCharsTyped - prevCharsRef.current;
+          prevCharsRef.current = prev.totalCharsTyped;
+          cpsHistoryRef.current.push({ second: newElapsed, cps: Math.max(0, cps) });
 
           if (isTimeMode) {
             const newTimeLeft = prev.timeLeft - 1;
@@ -161,8 +172,8 @@ export function useTypingEngine(mode: TestMode, value: number) {
             next.currentWordIndex += 1;
             next.currentInput = "";
             next.currentCharIndex = 0;
+            next.totalCharsTyped += 1; // count space as a char
 
-            // In words mode, finish when all words are typed
             if (!isTimeMode && next.currentWordIndex >= next.words.length) {
               if (timerRef.current) clearInterval(timerRef.current);
               timerRef.current = null;
@@ -175,6 +186,7 @@ export function useTypingEngine(mode: TestMode, value: number) {
         } else if (e.key.length === 1) {
           next.currentInput += e.key;
           next.currentCharIndex = next.currentInput.length;
+          next.totalCharsTyped += 1;
         }
 
         return next;
@@ -201,6 +213,7 @@ export function useTypingEngine(mode: TestMode, value: number) {
   }, [state]);
 
   const getWpmHistory = useCallback(() => wpmHistoryRef.current, []);
+  const getCpsHistory = useCallback(() => [...cpsHistoryRef.current], []);
 
-  return { state, handleKeyDown, reset, getStats, getWpmHistory };
+  return { state, handleKeyDown, reset, getStats, getWpmHistory, getCpsHistory };
 }

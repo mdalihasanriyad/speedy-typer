@@ -27,11 +27,6 @@ interface TypingEngineState {
   isFinished: boolean;
   totalCharsTyped: number;
 }
-  timeLeft: number;
-  elapsed: number;
-  isRunning: boolean;
-  isFinished: boolean;
-}
 
 function calcCorrectChars(typedHistory: string[], words: string[]) {
   let correct = 0;

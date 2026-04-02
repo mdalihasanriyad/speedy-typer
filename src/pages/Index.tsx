@@ -3,12 +3,14 @@ import Header from "@/components/Header";
 import TimerSelector, { TIME_VALUES, WORD_VALUES } from "@/components/TimerSelector";
 import TypingArea from "@/components/TypingArea";
 import Results from "@/components/Results";
+import Leaderboard from "@/components/Leaderboard";
 import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";
 import { RotateCcw } from "lucide-react";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/700.css";
 
 const Index = () => {
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [mode, setMode] = useState<TestMode>("time");
   const [timeValue, setTimeValue] = useState(30);
   const [wordValue, setWordValue] = useState(25);

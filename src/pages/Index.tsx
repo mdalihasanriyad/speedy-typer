@@ -122,10 +122,7 @@ const Index = () => {
                 onModeChange={handleModeChange}
                 values={values}
                 selected={value}
-                onSelect={(v) => {
-                  if (mode === "time") setTimeValue(v);
-                  else setWordValue(v);
-                }}
+                onSelect={() => {}}
               />
             </div>
             <CustomTextInput

@@ -182,13 +182,19 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
             next.currentCharIndex = 0;
             next.totalCharsTyped += 1; // count space as a char
 
-            if (!isTimeMode && next.currentWordIndex >= next.words.length) {
+            const shouldFinish = (mode === "words" || mode === "quote" || mode === "custom") && next.currentWordIndex >= next.words.length;
+            if (shouldFinish) {
               if (timerRef.current) clearInterval(timerRef.current);
               timerRef.current = null;
               const finalElapsed = next.startTime ? (Date.now() - next.startTime) / 1000 : next.elapsed;
               next.elapsed = Math.round(finalElapsed);
               next.isRunning = false;
               next.isFinished = true;
+            }
+            // Zen mode: generate more words when running low
+            if (mode === "zen" && next.currentWordIndex >= next.words.length - 10) {
+              const moreWords = generateWords(100);
+              next.words = [...next.words, ...moreWords];
             }
           }
         } else if (e.key.length === 1) {

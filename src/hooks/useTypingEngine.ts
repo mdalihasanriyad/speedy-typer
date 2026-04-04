@@ -145,6 +145,18 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
     (e: KeyboardEvent) => {
       if (stateRef.current.isFinished) return;
 
+      // Zen mode: Escape to finish
+      if (e.key === "Escape" && mode === "zen" && stateRef.current.isRunning) {
+        e.preventDefault();
+        setState((prev) => {
+          if (timerRef.current) clearInterval(timerRef.current);
+          timerRef.current = null;
+          const finalElapsed = prev.startTime ? (Date.now() - prev.startTime) / 1000 : prev.elapsed;
+          return { ...prev, elapsed: Math.round(finalElapsed), isRunning: false, isFinished: true };
+        });
+        return;
+      }
+
       if (e.key.length === 1 || e.key === "Backspace" || e.key === " ") {
         e.preventDefault();
       } else {

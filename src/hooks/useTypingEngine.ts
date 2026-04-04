@@ -46,12 +46,18 @@ function calcCorrectChars(typedHistory: string[], words: string[]) {
   return { correct, total };
 }
 
-export function useTypingEngine(mode: TestMode, value: number) {
+export function useTypingEngine(mode: TestMode, value: number, customWords?: string[]) {
   const isTimeMode = mode === "time";
-  const wordCount = isTimeMode ? 200 : value;
+
+  function generateInitialWords(): string[] {
+    if (mode === "custom" && customWords && customWords.length > 0) return customWords;
+    if (mode === "quote") return getRandomQuote().text.split(/\s+/);
+    if (mode === "zen") return generateWords(200);
+    return generateWords(isTimeMode ? 200 : value);
+  }
 
   const [state, setState] = useState<TypingEngineState>(() => ({
-    words: generateWords(wordCount),
+    words: generateInitialWords(),
     currentWordIndex: 0,
     currentCharIndex: 0,
     typedHistory: [],

@@ -83,7 +83,7 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
     cpsHistoryRef.current = [];
     prevCharsRef.current = 0;
     setState({
-      words: generateWords(wordCount),
+      words: generateInitialWords(),
       currentWordIndex: 0,
       currentCharIndex: 0,
       typedHistory: [],
@@ -95,7 +95,8 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
       isFinished: false,
       totalCharsTyped: 0,
     });
-  }, [value, isTimeMode, wordCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, isTimeMode, mode, customWords]);
 
   useEffect(() => {
     reset();

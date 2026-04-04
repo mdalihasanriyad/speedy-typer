@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generateWords } from "@/data/words";
+import { getRandomQuote } from "@/data/quotes";
 
-export type TestMode = "time" | "words";
+export type TestMode = "time" | "words" | "quote" | "zen" | "custom";
 
 export interface WpmSnapshot {
   second: number;
@@ -45,12 +46,18 @@ function calcCorrectChars(typedHistory: string[], words: string[]) {
   return { correct, total };
 }
 
-export function useTypingEngine(mode: TestMode, value: number) {
+export function useTypingEngine(mode: TestMode, value: number, customWords?: string[]) {
   const isTimeMode = mode === "time";
-  const wordCount = isTimeMode ? 200 : value;
+
+  function generateInitialWords(): string[] {
+    if (mode === "custom" && customWords && customWords.length > 0) return customWords;
+    if (mode === "quote") return getRandomQuote().text.split(/\s+/);
+    if (mode === "zen") return generateWords(200);
+    return generateWords(isTimeMode ? 200 : value);
+  }
 
   const [state, setState] = useState<TypingEngineState>(() => ({
-    words: generateWords(wordCount),
+    words: generateInitialWords(),
     currentWordIndex: 0,
     currentCharIndex: 0,
     typedHistory: [],
@@ -76,7 +83,7 @@ export function useTypingEngine(mode: TestMode, value: number) {
     cpsHistoryRef.current = [];
     prevCharsRef.current = 0;
     setState({
-      words: generateWords(wordCount),
+      words: generateInitialWords(),
       currentWordIndex: 0,
       currentCharIndex: 0,
       typedHistory: [],
@@ -88,7 +95,8 @@ export function useTypingEngine(mode: TestMode, value: number) {
       isFinished: false,
       totalCharsTyped: 0,
     });
-  }, [value, isTimeMode, wordCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, isTimeMode, mode, customWords]);
 
   useEffect(() => {
     reset();
@@ -137,6 +145,18 @@ export function useTypingEngine(mode: TestMode, value: number) {
     (e: KeyboardEvent) => {
       if (stateRef.current.isFinished) return;
 
+      // Zen mode: Escape to finish
+      if (e.key === "Escape" && mode === "zen" && stateRef.current.isRunning) {
+        e.preventDefault();
+        setState((prev) => {
+          if (timerRef.current) clearInterval(timerRef.current);
+          timerRef.current = null;
+          const finalElapsed = prev.startTime ? (Date.now() - prev.startTime) / 1000 : prev.elapsed;
+          return { ...prev, elapsed: Math.round(finalElapsed), isRunning: false, isFinished: true };
+        });
+        return;
+      }
+
       if (e.key.length === 1 || e.key === "Backspace" || e.key === " ") {
         e.preventDefault();
       } else {
@@ -174,13 +194,19 @@ export function useTypingEngine(mode: TestMode, value: number) {
             next.currentCharIndex = 0;
             next.totalCharsTyped += 1; // count space as a char
 
-            if (!isTimeMode && next.currentWordIndex >= next.words.length) {
+            const shouldFinish = (mode === "words" || mode === "quote" || mode === "custom") && next.currentWordIndex >= next.words.length;
+            if (shouldFinish) {
               if (timerRef.current) clearInterval(timerRef.current);
               timerRef.current = null;
               const finalElapsed = next.startTime ? (Date.now() - next.startTime) / 1000 : next.elapsed;
               next.elapsed = Math.round(finalElapsed);
               next.isRunning = false;
               next.isFinished = true;
+            }
+            // Zen mode: generate more words when running low
+            if (mode === "zen" && next.currentWordIndex >= next.words.length - 10) {
+              const moreWords = generateWords(100);
+              next.words = [...next.words, ...moreWords];
             }
           }
         } else if (e.key.length === 1) {

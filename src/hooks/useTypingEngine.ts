@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generateWords } from "@/data/words";
+import { getRandomQuote } from "@/data/quotes";
 
-export type TestMode = "time" | "words";
+export type TestMode = "time" | "words" | "quote" | "zen" | "custom";
 
 export interface WpmSnapshot {
   second: number;

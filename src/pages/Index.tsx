@@ -5,6 +5,7 @@ import TypingArea from "@/components/TypingArea";
 import Results from "@/components/Results";
 import LiveCpsChart from "@/components/LiveCpsChart";
 import Leaderboard from "@/components/Leaderboard";
+import CustomTextInput from "@/components/CustomTextInput";
 import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";
 import { RotateCcw } from "lucide-react";
 import "@fontsource/jetbrains-mono/400.css";
@@ -15,14 +16,27 @@ const Index = () => {
   const [mode, setMode] = useState<TestMode>("time");
   const [timeValue, setTimeValue] = useState(30);
   const [wordValue, setWordValue] = useState(25);
+  const [customWords, setCustomWords] = useState<string[] | undefined>();
+  const [customReady, setCustomReady] = useState(false);
 
-  const value = mode === "time" ? timeValue : wordValue;
+  const value = mode === "time" ? timeValue : mode === "words" ? wordValue : 0;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
 
-  const { state, handleKeyDown, reset, getStats, getWpmHistory, getCpsHistory } = useTypingEngine(mode, value);
+  const { state, handleKeyDown, reset, getStats, getWpmHistory, getCpsHistory } = useTypingEngine(
+    mode,
+    value,
+    customWords
+  );
   const containerRef = useRef<HTMLDivElement>(null);
-
   const tabPressedRef = useRef(false);
+
+  const handleModeChange = (newMode: TestMode) => {
+    setMode(newMode);
+    if (newMode === "custom") {
+      setCustomReady(false);
+      setCustomWords(undefined);
+    }
+  };
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -34,6 +48,10 @@ const Index = () => {
       if (e.key === "Enter" && tabPressedRef.current) {
         e.preventDefault();
         tabPressedRef.current = false;
+        if (mode === "custom") {
+          setCustomReady(false);
+          setCustomWords(undefined);
+        }
         reset();
         return;
       }
@@ -42,13 +60,31 @@ const Index = () => {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [handleKeyDown, reset]);
+  }, [handleKeyDown, reset, mode]);
 
   useEffect(() => {
     containerRef.current?.focus();
   }, []);
 
   const stats = getStats();
+
+  const showCustomInput = mode === "custom" && !customReady;
+
+  // Progress display logic
+  const getProgressWidth = () => {
+    if (mode === "time") return (1 - state.timeLeft / value) * 100;
+    if (mode === "words") return (state.currentWordIndex / value) * 100;
+    if (mode === "quote" || mode === "custom") return (state.currentWordIndex / state.words.length) * 100;
+    return 0; // zen has no progress
+  };
+
+  const getCounterDisplay = () => {
+    if (mode === "time") return state.timeLeft;
+    if (mode === "words") return `${state.currentWordIndex}/${value}`;
+    if (mode === "quote" || mode === "custom") return `${state.currentWordIndex}/${state.words.length}`;
+    if (mode === "zen") return `${state.elapsed}s`;
+    return "";
+  };
 
   return (
     <div
@@ -68,16 +104,44 @@ const Index = () => {
             duration={state.elapsed}
             totalErrors={stats.totalErrors}
             wpmHistory={getWpmHistory()}
-            onRestart={reset}
+            onRestart={() => {
+              if (mode === "custom") {
+                setCustomReady(false);
+                setCustomWords(undefined);
+              }
+              reset();
+            }}
             mode={mode}
             modeValue={value}
           />
+        ) : showCustomInput ? (
+          <div className="w-full">
+            <div className="w-full flex items-center justify-between mb-8">
+              <TimerSelector
+                mode={mode}
+                onModeChange={handleModeChange}
+                values={values}
+                selected={value}
+                onSelect={(v) => {
+                  if (mode === "time") setTimeValue(v);
+                  else setWordValue(v);
+                }}
+              />
+            </div>
+            <CustomTextInput
+              onSubmit={(text) => {
+                const words = text.split(/\s+/).filter(Boolean);
+                setCustomWords(words);
+                setCustomReady(true);
+              }}
+            />
+          </div>
         ) : (
           <>
             <div className="w-full flex items-center justify-between mb-8">
               <TimerSelector
                 mode={mode}
-                onModeChange={setMode}
+                onModeChange={handleModeChange}
                 values={values}
                 selected={value}
                 onSelect={(v) => {
@@ -91,9 +155,7 @@ const Index = () => {
                     {stats.wpm} <span className="text-xs">wpm</span>
                   </span>
                   <span className="text-3xl font-bold text-primary tabular-nums">
-                    {mode === "time"
-                      ? state.timeLeft
-                      : `${state.currentWordIndex}/${value}`}
+                    {getCounterDisplay()}
                   </span>
                 </div>
               )}
@@ -110,18 +172,18 @@ const Index = () => {
               />
             </div>
 
-            {/* Progress bar */}
-            <div className="w-full h-[3px] rounded-full bg-secondary mt-4 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-primary"
-                style={{
-                  width: `${mode === "time"
-                    ? ((1 - state.timeLeft / value) * 100)
-                    : ((state.currentWordIndex / value) * 100)}%`,
-                  transition: "width 300ms ease-out",
-                }}
-              />
-            </div>
+            {/* Progress bar (hidden for zen) */}
+            {mode !== "zen" && (
+              <div className="w-full h-[3px] rounded-full bg-secondary mt-4 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary"
+                  style={{
+                    width: `${getProgressWidth()}%`,
+                    transition: "width 300ms ease-out",
+                  }}
+                />
+              </div>
+            )}
 
             {/* Live CPS chart */}
             {state.isRunning && (
@@ -131,12 +193,31 @@ const Index = () => {
             )}
 
             <button
-              onClick={reset}
+              onClick={() => {
+                if (mode === "custom") {
+                  setCustomReady(false);
+                  setCustomWords(undefined);
+                }
+                reset();
+              }}
               className="mt-8 text-sub hover:text-foreground transition-colors p-3"
               title="Restart test (Tab)"
             >
               <RotateCcw className="w-5 h-5" />
             </button>
+
+            {/* Zen stop button */}
+            {mode === "zen" && state.isRunning && (
+              <button
+                onClick={() => {
+                  // Force finish zen mode
+                  window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+                }}
+                className="mt-2 text-xs text-sub hover:text-foreground transition-colors"
+              >
+                press Esc to finish
+              </button>
+            )}
           </>
         )}
       </div>

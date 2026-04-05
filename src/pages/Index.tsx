@@ -197,7 +197,7 @@ const Index = () => {
                 }
                 reset();
               }}
-              className="mt-8 text-sub hover:text-foreground transition-colors p-3"
+              className="mt-16 text-sub hover:text-foreground transition-colors p-3"
               title="Restart test (Tab)"
             >
               <RotateCcw className="w-5 h-5" />

@@ -219,9 +219,7 @@ const Index = () => {
         )}
       </div>
 
-      <footer className="py-4 text-center text-sub text-xs">
-        <span>tab + enter — restart test</span>
-      </footer>
+      {/* footer hidden */}
     </div>
   );
 };

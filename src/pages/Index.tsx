@@ -171,6 +171,13 @@ const Index = () => {
               />
             </div>
 
+            {capsLock && (
+              <div className="mt-3 flex items-center gap-2 text-sm text-destructive animate-pulse">
+                <span className="inline-block w-2 h-2 rounded-full bg-destructive" />
+                Caps Lock is on
+              </div>
+            )}
+
             {/* Progress bar (hidden for zen) */}
             {/* {mode !== "zen" && (
               <div className="w-full h-[3px] rounded-full bg-secondary mt-4 overflow-hidden">

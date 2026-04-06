@@ -13,6 +13,7 @@ import "@fontsource/jetbrains-mono/700.css";
 
 const Index = () => {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
   const [mode, setMode] = useState<TestMode>("time");
   const [timeValue, setTimeValue] = useState(30);
   const [wordValue, setWordValue] = useState(25);
@@ -40,6 +41,7 @@ const Index = () => {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      setCapsLock(e.getModifierState("CapsLock"));
       if (e.key === "Tab") {
         e.preventDefault();
         tabPressedRef.current = true;
@@ -168,6 +170,13 @@ const Index = () => {
                 isRunning={state.isRunning}
               />
             </div>
+
+            {capsLock && (
+              <div className="mt-3 flex items-center gap-2 text-sm text-destructive animate-pulse">
+                <span className="inline-block w-2 h-2 rounded-full bg-destructive" />
+                Caps Lock is on
+              </div>
+            )}
 
             {/* Progress bar (hidden for zen) */}
             {/* {mode !== "zen" && (

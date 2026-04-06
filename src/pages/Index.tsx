@@ -148,8 +148,8 @@ const Index = () => {
               />
               {state.isRunning && (
                 <div className="flex items-center gap-6">
-                  <span className="text-lg text-sub tabular-nums">
-                    {stats.wpm} <span className="text-xs">wpm</span>
+                   <span className="text-3xl text-sub tabular-nums">
+                    {stats.wpm} <span className="text-sm">wpm</span>
                   </span>
                   <span className="text-3xl font-bold text-primary tabular-nums">
                     {getCounterDisplay()}
@@ -219,9 +219,7 @@ const Index = () => {
         )}
       </div>
 
-      <footer className="py-4 text-center text-sub text-xs">
-        <span>tab + enter — restart test</span>
-      </footer>
+      {/* footer hidden */}
     </div>
   );
 };

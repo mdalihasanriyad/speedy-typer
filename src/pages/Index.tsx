@@ -13,6 +13,7 @@ import "@fontsource/jetbrains-mono/700.css";
 
 const Index = () => {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
   const [mode, setMode] = useState<TestMode>("time");
   const [timeValue, setTimeValue] = useState(30);
   const [wordValue, setWordValue] = useState(25);

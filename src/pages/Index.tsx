@@ -41,6 +41,7 @@ const Index = () => {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      setCapsLock(e.getModifierState("CapsLock"));
       if (e.key === "Tab") {
         e.preventDefault();
         tabPressedRef.current = true;

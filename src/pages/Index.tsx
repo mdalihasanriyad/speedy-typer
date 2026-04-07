@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import TimerSelector, { TIME_VALUES, WORD_VALUES } from "@/components/TimerSelector";
 import TypingArea from "@/components/TypingArea";
 import Results from "@/components/Results";
-import LiveCpsChart from "@/components/LiveCpsChart";
+
 import Leaderboard from "@/components/Leaderboard";
 import CustomTextInput from "@/components/CustomTextInput";
 import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";

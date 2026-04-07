@@ -138,12 +138,14 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
       {/* Smooth caret */}
       <div
         ref={caretRef}
-        className={`absolute w-[2.5px] bg-caret rounded-sm pointer-events-none z-10 ${!isRunning ? "animate-caret-blink" : ""}`}
+        className={`absolute w-[2.5px] rounded-sm pointer-events-none z-10 ${!isRunning ? "animate-caret-blink" : ""}`}
         style={{
           height: "1.4em",
           left: `${caretPos.left}px`,
           top: `${caretPos.top}px`,
           transition: "left 80ms ease-out, top 80ms ease-out",
+          background: "hsl(var(--caret))",
+          boxShadow: "0 0 8px 2px hsl(var(--caret) / 0.4), 0 0 2px 0 hsl(var(--caret) / 0.6)",
         }}
       />
       <div className="flex flex-wrap">{renderedWords}</div>

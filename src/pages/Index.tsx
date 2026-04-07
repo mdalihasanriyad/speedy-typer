@@ -179,7 +179,7 @@ const Index = () => {
             )}
 
             {/* Progress bar (hidden for zen) */}
-            {/* {mode !== "zen" && (
+            {mode !== "zen" && state.isRunning && (
               <div className="w-full h-[3px] rounded-full bg-secondary mt-4 overflow-hidden">
                 <div
                   className="h-full rounded-full bg-primary"
@@ -189,7 +189,7 @@ const Index = () => {
                   }}
                 />
               </div>
-            )} */}
+            )}
 
             {/* Live CPS chart */}
             {state.isRunning && (

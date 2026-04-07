@@ -23,7 +23,7 @@ const Index = () => {
   const value = mode === "time" ? timeValue : mode === "words" ? wordValue : 0;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
 
-  const { state, handleKeyDown, reset, getStats, getWpmHistory, getCpsHistory } = useTypingEngine(
+  const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(
     mode,
     value,
     customWords

@@ -191,12 +191,6 @@ const Index = () => {
               </div>
             )}
 
-            {/* Live CPS chart */}
-            {state.isRunning && (
-              <div className="w-full mt-4">
-                <LiveCpsChart data={getCpsHistory()} />
-              </div>
-            )}
 
             <button
               onClick={() => {

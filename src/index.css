@@ -178,3 +178,25 @@
 .char-flash-correct {
   animation: char-flash 0.4s ease-out forwards;
 }
+
+@keyframes char-shake {
+  0% {
+    transform: translateX(0);
+    text-shadow: 0 0 8px hsl(var(--destructive) / 0.9), 0 0 16px hsl(var(--destructive) / 0.4);
+    color: hsl(var(--destructive));
+  }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+  100% {
+    transform: translateX(0);
+    text-shadow: none;
+    color: hsl(var(--text-incorrect));
+  }
+}
+
+.char-shake-incorrect {
+  display: inline-block;
+  animation: char-shake 0.35s ease-out forwards;
+}

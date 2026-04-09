@@ -88,7 +88,11 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
 
         if (isTyped || isActive) {
           if (cIdx < typedWord.length) {
-            className = typedWord[cIdx] === char ? "text-text-correct" : "text-text-incorrect";
+            if (typedWord[cIdx] === char) {
+              className = isActive ? "char-flash-correct" : "text-text-correct";
+            } else {
+              className = "text-text-incorrect";
+            }
           } else if (isTyped) {
             className = "text-text-incorrect opacity-60";
           } else if (isActive && cIdx === typedWord.length) {

@@ -163,3 +163,18 @@
     @apply bg-background text-foreground font-mono;
   }
 }
+
+@keyframes char-flash {
+  0% {
+    text-shadow: 0 0 8px hsl(var(--primary) / 0.9), 0 0 16px hsl(var(--primary) / 0.4);
+    color: hsl(var(--primary));
+  }
+  100% {
+    text-shadow: none;
+    color: hsl(var(--text-correct));
+  }
+}
+
+.char-flash-correct {
+  animation: char-flash 0.4s ease-out forwards;
+}

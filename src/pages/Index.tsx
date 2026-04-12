@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "@/components/Header";
 import TimerSelector, { TIME_VALUES, WORD_VALUES } from "@/components/TimerSelector";
 import TypingArea from "@/components/TypingArea";
@@ -19,14 +19,18 @@ const Index = () => {
   const [wordValue, setWordValue] = useState(25);
   const [customWords, setCustomWords] = useState<string[] | undefined>();
   const [customReady, setCustomReady] = useState(false);
+  const [punctuation, setPunctuation] = useState(false);
+  const [numbers, setNumbers] = useState(false);
 
   const value = mode === "time" ? timeValue : mode === "words" ? wordValue : 0;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
+  const genOptions = useMemo(() => ({ punctuation, numbers }), [punctuation, numbers]);
 
   const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(
     mode,
     value,
-    customWords
+    customWords,
+    genOptions
   );
   const containerRef = useRef<HTMLDivElement>(null);
   const tabPressedRef = useRef(false);
@@ -133,6 +137,10 @@ const Index = () => {
                 values={values}
                 selected={value}
                 onSelect={() => {}}
+                punctuation={punctuation}
+                numbers={numbers}
+                onTogglePunctuation={() => setPunctuation((p) => !p)}
+                onToggleNumbers={() => setNumbers((n) => !n)}
               />
             </div>
             <CustomTextInput
@@ -155,6 +163,10 @@ const Index = () => {
                   if (mode === "time") setTimeValue(v);
                   else setWordValue(v);
                 }}
+                punctuation={punctuation}
+                numbers={numbers}
+                onTogglePunctuation={() => setPunctuation((p) => !p)}
+                onToggleNumbers={() => setNumbers((n) => !n)}
               />
               {state.isRunning && (
                 <div className="flex items-center gap-6">

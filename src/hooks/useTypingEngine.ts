@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { generateWords } from "@/data/words";
+import { generateWords, type GenerateOptions } from "@/data/words";
 import { getRandomQuote } from "@/data/quotes";
 
 export type TestMode = "time" | "words" | "quote" | "zen" | "custom";
@@ -46,14 +46,14 @@ function calcCorrectChars(typedHistory: string[], words: string[]) {
   return { correct, total };
 }
 
-export function useTypingEngine(mode: TestMode, value: number, customWords?: string[]) {
+export function useTypingEngine(mode: TestMode, value: number, customWords?: string[], genOptions?: GenerateOptions) {
   const isTimeMode = mode === "time";
 
   function generateInitialWords(): string[] {
     if (mode === "custom" && customWords && customWords.length > 0) return customWords;
     if (mode === "quote") return getRandomQuote().text.split(/\s+/);
-    if (mode === "zen") return generateWords(200);
-    return generateWords(isTimeMode ? 200 : value);
+    if (mode === "zen") return generateWords(200, genOptions);
+    return generateWords(isTimeMode ? 200 : value, genOptions);
   }
 
   const [state, setState] = useState<TypingEngineState>(() => ({
@@ -96,7 +96,7 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
       totalCharsTyped: 0,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, isTimeMode, mode, customWords]);
+  }, [value, isTimeMode, mode, customWords, genOptions]);
 
   useEffect(() => {
     reset();
@@ -205,7 +205,7 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
             }
             // Zen mode: generate more words when running low
             if (mode === "zen" && next.currentWordIndex >= next.words.length - 10) {
-              const moreWords = generateWords(100);
+              const moreWords = generateWords(100, genOptions);
               next.words = [...next.words, ...moreWords];
             }
           }

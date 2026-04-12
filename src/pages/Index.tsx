@@ -137,6 +137,10 @@ const Index = () => {
                 values={values}
                 selected={value}
                 onSelect={() => {}}
+                punctuation={punctuation}
+                numbers={numbers}
+                onTogglePunctuation={() => setPunctuation((p) => !p)}
+                onToggleNumbers={() => setNumbers((n) => !n)}
               />
             </div>
             <CustomTextInput
@@ -159,6 +163,10 @@ const Index = () => {
                   if (mode === "time") setTimeValue(v);
                   else setWordValue(v);
                 }}
+                punctuation={punctuation}
+                numbers={numbers}
+                onTogglePunctuation={() => setPunctuation((p) => !p)}
+                onToggleNumbers={() => setNumbers((n) => !n)}
               />
               {state.isRunning && (
                 <div className="flex items-center gap-6">

@@ -205,7 +205,7 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
             }
             // Zen mode: generate more words when running low
             if (mode === "zen" && next.currentWordIndex >= next.words.length - 10) {
-              const moreWords = generateWords(100);
+              const moreWords = generateWords(100, genOptions);
               next.words = [...next.words, ...moreWords];
             }
           }

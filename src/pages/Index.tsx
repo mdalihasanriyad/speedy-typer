@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "@/components/Header";
 import TimerSelector, { TIME_VALUES, WORD_VALUES } from "@/components/TimerSelector";
 import TypingArea from "@/components/TypingArea";

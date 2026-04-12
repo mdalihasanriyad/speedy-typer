@@ -135,7 +135,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
   return (
     <div
       ref={containerRef}
-      className={`relative text-[22px] leading-relaxed max-h-[7.5rem] overflow-hidden select-none transition-opacity ${
+      className={`relative text-[1.875rem] leading-[2.8rem] max-h-[9rem] overflow-hidden select-none transition-opacity ${
         isFinished ? "opacity-0" : ""
       }`}
     >

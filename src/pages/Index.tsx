@@ -19,14 +19,18 @@ const Index = () => {
   const [wordValue, setWordValue] = useState(25);
   const [customWords, setCustomWords] = useState<string[] | undefined>();
   const [customReady, setCustomReady] = useState(false);
+  const [punctuation, setPunctuation] = useState(false);
+  const [numbers, setNumbers] = useState(false);
 
   const value = mode === "time" ? timeValue : mode === "words" ? wordValue : 0;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
+  const genOptions = { punctuation, numbers };
 
   const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(
     mode,
     value,
-    customWords
+    customWords,
+    genOptions
   );
   const containerRef = useRef<HTMLDivElement>(null);
   const tabPressedRef = useRef(false);

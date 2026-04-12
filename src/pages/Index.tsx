@@ -24,7 +24,7 @@ const Index = () => {
 
   const value = mode === "time" ? timeValue : mode === "words" ? wordValue : 0;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
-  const genOptions = { punctuation, numbers };
+  const genOptions = useMemo(() => ({ punctuation, numbers }), [punctuation, numbers]);
 
   const { state, handleKeyDown, reset, getStats, getWpmHistory } = useTypingEngine(
     mode,

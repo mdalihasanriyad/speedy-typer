@@ -98,6 +98,14 @@ const Index = () => {
       <Leaderboard open={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />
 
       <div className="flex-1 flex flex-col items-center justify-center px-8 max-w-[1500px] w-full mx-auto -mt-16">
+        {/* Language label like MonkeyType */}
+        {!state.isFinished && !showCustomInput && !state.isRunning && (
+          <div className="flex items-center gap-2 text-sub text-sm mb-4">
+            <span>🌐</span>
+            <span>english</span>
+          </div>
+        )}
+
         {state.isFinished ? (
           <Results
             wpm={stats.wpm}
@@ -160,7 +168,7 @@ const Index = () => {
               )}
             </div>
 
-            <div className="w-full my-20">
+            <div className="w-full my-10">
               <TypingArea
                 words={state.words}
                 currentWordIndex={state.currentWordIndex}

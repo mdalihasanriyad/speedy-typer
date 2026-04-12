@@ -160,7 +160,7 @@ const Index = () => {
               )}
             </div>
 
-            <div className="w-full">
+            <div className="w-full my-20">
               <TypingArea
                 words={state.words}
                 currentWordIndex={state.currentWordIndex}

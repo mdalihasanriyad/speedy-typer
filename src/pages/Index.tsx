@@ -206,7 +206,6 @@ const Index = () => {
             {mode === "zen" && state.isRunning && (
               <button
                 onClick={() => {
-                  // Force finish zen mode
                   window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
                 }}
                 className="mt-2 text-xs text-sub hover:text-foreground transition-colors"
@@ -214,6 +213,22 @@ const Index = () => {
                 press Esc to finish
               </button>
             )}
+
+            {/* Keyboard shortcut hints */}
+            <div className="mt-4 flex items-center gap-6 text-xs text-sub/60">
+              <span>
+                <kbd className="px-1.5 py-0.5 rounded bg-sub/10 text-sub/80 font-mono text-[10px]">tab</kbd>
+                {" + "}
+                <kbd className="px-1.5 py-0.5 rounded bg-sub/10 text-sub/80 font-mono text-[10px]">enter</kbd>
+                <span className="ml-1.5">— restart test</span>
+              </span>
+              {mode === "zen" && state.isRunning && (
+                <span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-sub/10 text-sub/80 font-mono text-[10px]">esc</kbd>
+                  <span className="ml-1.5">— end test</span>
+                </span>
+              )}
+            </div>
           </>
         )}
       </div>

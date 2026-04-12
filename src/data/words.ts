@@ -32,10 +32,40 @@ export const commonWords = [
   "center", "building", "figure", "field", "power", "south", "north"
 ];
 
-export function generateWords(count: number): string[] {
-  const words: string[] = [];
+const punctuationMarks = [".", ",", "!", "?", ";", ":", "'", '"', "-"];
+
+function addPunctuation(word: string): string {
+  const r = Math.random();
+  if (r < 0.15) return word + punctuationMarks[Math.floor(Math.random() * punctuationMarks.length)];
+  if (r < 0.05) return word.charAt(0).toUpperCase() + word.slice(1);
+  return word;
+}
+
+function addNumbers(words: string[]): string[] {
+  const result = [...words];
+  const count = Math.max(1, Math.floor(result.length * 0.1));
+  for (let i = 0; i < count; i++) {
+    const idx = Math.floor(Math.random() * result.length);
+    result[idx] = String(Math.floor(Math.random() * 10000));
+  }
+  return result;
+}
+
+export interface GenerateOptions {
+  punctuation?: boolean;
+  numbers?: boolean;
+}
+
+export function generateWords(count: number, options?: GenerateOptions): string[] {
+  let words: string[] = [];
   for (let i = 0; i < count; i++) {
     words.push(commonWords[Math.floor(Math.random() * commonWords.length)]);
+  }
+  if (options?.punctuation) {
+    words = words.map(addPunctuation);
+  }
+  if (options?.numbers) {
+    words = addNumbers(words);
   }
   return words;
 }

@@ -145,7 +145,7 @@ const Index = () => {
           </div>
         ) : (
           <>
-            <div className="w-full flex items-center justify-between mb-8">
+            <div className="w-full flex items-center justify-center mb-8">
               <TimerSelector
                 mode={mode}
                 onModeChange={handleModeChange}

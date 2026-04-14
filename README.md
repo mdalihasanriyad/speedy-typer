@@ -1,4 +1,4 @@
-# Speedy
+# Speedy Typer
 
 Speedy is a modern, fast, and lightweight web application built to deliver a seamless and efficient user experience. It focuses on performance, simplicity, and usability—making it ideal for users who want quick and reliable interactions.
 
@@ -16,18 +16,18 @@ Speedy is a modern, fast, and lightweight web application built to deliver a sea
 🌍 Cross-Browser Support – Compatible with all modern browsers
 🛠️ Tech Stack
 
-#Frontend
+# Frontend
 
-HTML5
-CSS3
-JavaScript
+- HTML5
+- CSS3
+- JavaScript
 
-#Backend
+# Backend
 
-Node.js (if used)
-Express.js (if used)
+- Node.js (if used)
+- Express.js (if used)
 
-#Other Tools
+ #Other Tools
 
-Git & GitHub
-Hosting (VPS / Cloud)
+- Git & GitHub
+- Hosting (VPS / Cloud)

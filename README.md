@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# Welcome to my Speedy Typer
 
-TODO: Document your project here
+#live link: https://speedy.ahriyad.top/

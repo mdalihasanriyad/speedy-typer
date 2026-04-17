@@ -24,7 +24,7 @@ Speedy is a modern, fast, and lightweight web application built to deliver a sea
 
 # Backend
 
-- Node.js (if used)
+- Node.js  
 - Express.js (if used)
 
  #Other Tools

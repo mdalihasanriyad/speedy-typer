@@ -1,6 +1,6 @@
 # Speedy Typer
 
-Speedy is a modern, fast, and lightweight web application built to deliver a seamless and efficient user experience. It focuses on performance, simplicity, and usability—making it ideal for users who want quick and reliable interactions.
+Speedy is a modern, fast, and also lightweight web application built to deliver a seamless and efficient user experience. It focuses on performance, simplicity, and usability—making it ideal for users who want quick and reliable interactions.
 
 # Live Website: https://speedy.ahriyad.top/
 
@@ -27,7 +27,7 @@ Speedy is a modern, fast, and lightweight web application built to deliver a sea
 - Node.js  
 - Express.js 
 
- #Other Tools
+ # Other Tools
 
 - Git & GitHub
 - Hosting Vercel

@@ -30,4 +30,4 @@ Speedy is a modern, fast, and lightweight web application built to deliver a sea
  #Other Tools
 
 - Git & GitHub
-- Hosting (VPS / Cloud)
+- Hosting Vercel

@@ -230,6 +230,7 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
 
   const getStats = useCallback(() => {
     const { correct: correctChars, total: totalChars } = calcCorrectChars(state.typedHistory, state.words);
+    const { correct: liveCorrect, total: liveTotal } = calcCorrectChars(state.typedHistory, state.words, state.currentInput, state.currentWordIndex);
 
     let correctWords = 0;
     state.typedHistory.forEach((typed, i) => {
@@ -242,7 +243,8 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
     const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
 
     const totalErrors = totalChars - correctChars;
-    return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length, totalErrors, correctChars, totalChars };
+    const liveTotalErrors = liveTotal - liveCorrect;
+    return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length, totalErrors, correctChars, totalChars, liveTotalErrors };
   }, [state]);
 
   const getWpmHistory = useCallback(() => wpmHistoryRef.current, []);

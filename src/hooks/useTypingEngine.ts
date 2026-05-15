@@ -235,7 +235,7 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
     const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
 
     const totalErrors = totalChars - correctChars;
-    return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length, totalErrors };
+    return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length, totalErrors, correctChars, totalChars };
   }, [state]);
 
   const getWpmHistory = useCallback(() => wpmHistoryRef.current, []);

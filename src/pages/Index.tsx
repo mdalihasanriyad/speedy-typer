@@ -6,6 +6,7 @@ import Results from "@/components/Results";
 
 import Leaderboard from "@/components/Leaderboard";
 import CustomTextInput from "@/components/CustomTextInput";
+import DebugPanel from "@/components/DebugPanel";
 import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";
 import { RotateCcw } from "lucide-react";
 import "@fontsource/jetbrains-mono/400.css";

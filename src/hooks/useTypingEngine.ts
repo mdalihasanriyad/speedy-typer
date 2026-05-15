@@ -29,7 +29,7 @@ interface TypingEngineState {
   totalCharsTyped: number;
 }
 
-function calcCorrectChars(typedHistory: string[], words: string[]) {
+function calcCorrectChars(typedHistory: string[], words: string[], currentInput?: string, currentWordIndex?: number) {
   let correct = 0;
   let total = 0;
   typedHistory.forEach((typed, i) => {
@@ -43,6 +43,13 @@ function calcCorrectChars(typedHistory: string[], words: string[]) {
     }
     total += typed.length;
   });
+  if (currentInput !== undefined && currentWordIndex !== undefined) {
+    const target = words[currentWordIndex] || "";
+    for (let c = 0; c < currentInput.length; c++) {
+      if (c < target.length && currentInput[c] === target[c]) correct++;
+    }
+    total += currentInput.length;
+  }
   return { correct, total };
 }
 

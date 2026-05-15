@@ -6,6 +6,7 @@ import Results from "@/components/Results";
 
 import Leaderboard from "@/components/Leaderboard";
 import CustomTextInput from "@/components/CustomTextInput";
+import DebugPanel from "@/components/DebugPanel";
 import { useTypingEngine, type TestMode } from "@/hooks/useTypingEngine";
 import { RotateCcw } from "lucide-react";
 import "@fontsource/jetbrains-mono/400.css";
@@ -197,6 +198,14 @@ const Index = () => {
                 Caps Lock is on
               </div>
             )}
+
+            <DebugPanel
+              correctChars={stats.correctChars}
+              totalChars={stats.totalChars}
+              elapsed={state.elapsed}
+              errors={stats.totalErrors}
+              accuracy={stats.accuracy}
+            />
 
 
 

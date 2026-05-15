@@ -29,7 +29,7 @@ interface TypingEngineState {
   totalCharsTyped: number;
 }
 
-function calcCorrectChars(typedHistory: string[], words: string[]) {
+function calcCorrectChars(typedHistory: string[], words: string[], currentInput?: string, currentWordIndex?: number) {
   let correct = 0;
   let total = 0;
   typedHistory.forEach((typed, i) => {
@@ -43,6 +43,13 @@ function calcCorrectChars(typedHistory: string[], words: string[]) {
     }
     total += typed.length;
   });
+  if (currentInput !== undefined && currentWordIndex !== undefined) {
+    const target = words[currentWordIndex] || "";
+    for (let c = 0; c < currentInput.length; c++) {
+      if (c < target.length && currentInput[c] === target[c]) correct++;
+    }
+    total += currentInput.length;
+  }
   return { correct, total };
 }
 
@@ -223,6 +230,7 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
 
   const getStats = useCallback(() => {
     const { correct: correctChars, total: totalChars } = calcCorrectChars(state.typedHistory, state.words);
+    const { correct: liveCorrect, total: liveTotal } = calcCorrectChars(state.typedHistory, state.words, state.currentInput, state.currentWordIndex);
 
     let correctWords = 0;
     state.typedHistory.forEach((typed, i) => {
@@ -235,7 +243,8 @@ export function useTypingEngine(mode: TestMode, value: number, customWords?: str
     const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
 
     const totalErrors = totalChars - correctChars;
-    return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length, totalErrors, correctChars, totalChars };
+    const liveTotalErrors = liveTotal - liveCorrect;
+    return { wpm, rawWpm, accuracy, correctWords, totalWords: state.typedHistory.length, totalErrors, correctChars, totalChars, liveTotalErrors };
   }, [state]);
 
   const getWpmHistory = useCallback(() => wpmHistoryRef.current, []);

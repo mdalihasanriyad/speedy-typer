@@ -200,6 +200,8 @@ const Index = () => {
             )}
 
             <DebugPanel
+              wpm={stats.wpm}
+              rawWpm={stats.rawWpm}
               correctChars={stats.correctChars}
               totalChars={stats.totalChars}
               elapsed={state.elapsed}

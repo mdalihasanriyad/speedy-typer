@@ -37,6 +37,10 @@ const DebugPanel = ({ wpm, rawWpm, correctChars, totalChars, elapsed, errors, li
         <span className="text-foreground">{errors}</span>
       </div>
       <div className="flex items-center gap-1.5">
+        <span className="text-sub/50">liveTotalErrors</span>
+        <span className="text-foreground">{liveTotalErrors}</span>
+      </div>
+      <div className="flex items-center gap-1.5">
         <span className="text-sub/50">accuracy</span>
         <span className="text-foreground">{accuracy}%</span>
       </div>

@@ -206,6 +206,7 @@ const Index = () => {
               totalChars={stats.totalChars}
               elapsed={state.elapsed}
               errors={stats.totalErrors}
+              liveTotalErrors={stats.liveTotalErrors}
               accuracy={stats.accuracy}
             />
 

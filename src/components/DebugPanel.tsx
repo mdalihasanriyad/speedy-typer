@@ -5,10 +5,11 @@ interface DebugPanelProps {
   totalChars: number;
   elapsed: number;
   errors: number;
+  liveTotalErrors: number;
   accuracy: number;
 }
 
-const DebugPanel = ({ wpm, rawWpm, correctChars, totalChars, elapsed, errors, accuracy }: DebugPanelProps) => {
+const DebugPanel = ({ wpm, rawWpm, correctChars, totalChars, elapsed, errors, liveTotalErrors, accuracy }: DebugPanelProps) => {
   return (
     <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-mono text-sub/70">
       <div className="flex items-center gap-1.5">

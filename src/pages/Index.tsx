@@ -199,6 +199,14 @@ const Index = () => {
               </div>
             )}
 
+            <DebugPanel
+              correctChars={stats.correctChars}
+              totalChars={stats.totalChars}
+              elapsed={state.elapsed}
+              errors={stats.totalErrors}
+              accuracy={stats.accuracy}
+            />
+
 
 
             <button

@@ -14,6 +14,32 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
   const activeWordRef = useRef<HTMLDivElement>(null);
   const caretRef = useRef<HTMLDivElement>(null);
   const [caretPos, setCaretPos] = useState({ left: 0, top: 0 });
+  const [lineHeight, setLineHeight] = useState(0);
+
+  // Measure the actual line height of a word element. Recomputes on window
+  // resize and whenever the container itself resizes (font-size changes,
+  // container width changes, zoom, etc.).
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = activeWordRef.current ?? containerRef.current?.querySelector<HTMLDivElement>("div[class*='inline-block']");
+      if (el) {
+        const h = el.getBoundingClientRect().height;
+        if (h > 0) setLineHeight(h);
+      }
+    };
+    measure();
+
+    window.addEventListener("resize", measure);
+    let ro: ResizeObserver | undefined;
+    if (containerRef.current && typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(measure);
+      ro.observe(containerRef.current);
+    }
+    return () => {
+      window.removeEventListener("resize", measure);
+      ro?.disconnect();
+    };
+  }, []);
 
   // Scroll when active word moves to a new line
   useEffect(() => {
@@ -23,16 +49,16 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
       const containerTop = container.getBoundingClientRect().top;
       const wordTop = word.getBoundingClientRect().top;
       const offset = wordTop - containerTop;
-      // Derive line height dynamically from the active word so scroll thresholds
-      // adapt to any font-size / line-height (zoom, responsive, user prefs).
-      const lineHeight = word.getBoundingClientRect().height;
+      // Use the cached measured line height (recomputed on resize), falling
+      // back to a fresh measurement if it hasn't been captured yet.
+      const lh = lineHeight || word.getBoundingClientRect().height;
       // Trigger when the active word is on the 3rd visible line or beyond,
       // then scroll so it sits on the 2nd line.
-      if (offset > lineHeight * 2) {
-        container.scrollTop += offset - lineHeight;
+      if (offset > lh * 2) {
+        container.scrollTop += offset - lh;
       }
     }
-  }, [currentWordIndex]);
+  }, [currentWordIndex, lineHeight]);
 
   // Update caret position based on the active word's character spans
   useLayoutEffect(() => {

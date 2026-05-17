@@ -23,8 +23,13 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
       const containerTop = container.getBoundingClientRect().top;
       const wordTop = word.getBoundingClientRect().top;
       const offset = wordTop - containerTop;
-      if (offset > 112) {
-        container.scrollTop += offset - 56;
+      // Derive line height dynamically from the active word so scroll thresholds
+      // adapt to any font-size / line-height (zoom, responsive, user prefs).
+      const lineHeight = word.getBoundingClientRect().height;
+      // Trigger when the active word is on the 3rd visible line or beyond,
+      // then scroll so it sits on the 2nd line.
+      if (offset > lineHeight * 2) {
+        container.scrollTop += offset - lineHeight;
       }
     }
   }, [currentWordIndex]);

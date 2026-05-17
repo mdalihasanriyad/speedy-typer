@@ -23,8 +23,8 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
       const containerTop = container.getBoundingClientRect().top;
       const wordTop = word.getBoundingClientRect().top;
       const offset = wordTop - containerTop;
-      if (offset > 90) {
-        container.scrollTop += offset - 30;
+      if (offset > 112) {
+        container.scrollTop += offset - 56;
       }
     }
   }, [currentWordIndex]);

@@ -23,8 +23,8 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
       const containerTop = container.getBoundingClientRect().top;
       const wordTop = word.getBoundingClientRect().top;
       const offset = wordTop - containerTop;
-      if (offset > 90) {
-        container.scrollTop += offset - 30;
+      if (offset > 112) {
+        container.scrollTop += offset - 56;
       }
     }
   }, [currentWordIndex]);
@@ -135,7 +135,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
   return (
     <div
       ref={containerRef}
-      className={`relative text-[1.875rem] leading-[2.8rem] max-h-[9rem] overflow-hidden select-none transition-opacity ${
+      className={`relative text-[1.875rem] leading-[3.5rem] max-h-[10.5rem] overflow-hidden select-none transition-opacity ${
         isFinished ? "opacity-0" : ""
       }`}
     >

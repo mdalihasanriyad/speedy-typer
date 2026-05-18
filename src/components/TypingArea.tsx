@@ -154,7 +154,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
         <div
           key={wIdx}
           ref={isActive ? activeWordRef : undefined}
-          className="inline-block mr-[10px] mb-1 relative"
+          className="inline-block mr-[0.75em] mb-1 relative"
         >
           {chars}
           {extraChars}
@@ -166,7 +166,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
   return (
     <div
       ref={containerRef}
-      className={`relative text-[1.875rem] leading-[3.5rem] max-h-[10.5rem] overflow-hidden select-none transition-opacity ${
+      className={`relative font-mono text-[1.875rem] leading-[3.5rem] max-h-[10.5rem] overflow-hidden select-none transition-opacity ${
         isFinished ? "opacity-0" : ""
       }`}
     >

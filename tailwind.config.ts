@@ -14,8 +14,8 @@ export default {
     extend: {
       fontFamily: {
         mono: [
-          '"JetBrains Mono"',
-          '"JetBrains Mono Fallback"',
+          '"Roboto Mono"',
+          '"Roboto Mono Fallback"',
           'ui-monospace',
           'SFMono-Regular',
           'Menlo',

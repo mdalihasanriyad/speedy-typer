@@ -15,6 +15,7 @@ export default {
       fontFamily: {
         mono: [
           '"JetBrains Mono"',
+          '"JetBrains Mono Fallback"',
           'ui-monospace',
           'SFMono-Regular',
           'Menlo',

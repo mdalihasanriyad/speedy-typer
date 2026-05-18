@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Metric-matched fallback for JetBrains Mono. While the web font loads
+ * (font-display: swap), text is rendered in a system monospace whose
+ * metrics are adjusted to closely match JetBrains Mono — so character
+ * widths and line height stay the same and the typing layout doesn't
+ * jump when the real font swaps in.
+ */
+@font-face {
+  font-family: "JetBrains Mono Fallback";
+  src: local("Menlo"), local("Consolas"), local("Liberation Mono"),
+    local("Courier New"), local("monospace");
+  size-adjust: 105%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+  font-display: swap;
+}
+
 @layer base {
   /* Default: Dark (MonkeyType classic) */
   :root,

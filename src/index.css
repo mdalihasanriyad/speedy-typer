@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 /*
- * Metric-matched fallback for Roboto Mono. While the web font loads
- * (font-display: swap), text is rendered in a system monospace whose
- * metrics are adjusted to closely match Roboto Mono — so character
- * widths and line height stay the same and the typing layout doesn't
- * jump when the real font swaps in.
+ * Roboto Mono is loaded with font-display: block (see index.html), so
+ * text stays invisible briefly until the web font is ready instead of
+ * swapping from a fallback — this prevents the layout "bump" when the
+ * font finishes loading. The fallback family below is only used if the
+ * web font fails to load entirely.
  */
 @font-face {
   font-family: "Roboto Mono Fallback";
@@ -17,7 +17,6 @@
   ascent-override: 95%;
   descent-override: 25%;
   line-gap-override: 0%;
-  font-display: swap;
 }
 
 @layer base {

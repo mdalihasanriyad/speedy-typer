@@ -15,6 +15,40 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
   const caretRef = useRef<HTMLDivElement>(null);
   const [caretPos, setCaretPos] = useState({ left: 0, top: 0 });
   const [lineHeight, setLineHeight] = useState(0);
+  const [fontReady, setFontReady] = useState(false);
+  // Tick bumps whenever fonts finish loading so measurement effects re-run
+  // with the final glyph metrics, preventing caret/character jitter.
+  const [fontTick, setFontTick] = useState(0);
+
+  // Wait for Roboto Mono to be fully loaded before revealing the typing area.
+  // Until then we keep the layout reserved but invisible, so the caret and
+  // characters render in their final positions on first paint.
+  useEffect(() => {
+    const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
+    if (!fonts) {
+      setFontReady(true);
+      return;
+    }
+
+    let cancelled = false;
+    const markReady = () => {
+      if (cancelled) return;
+      setFontReady(true);
+      setFontTick((t) => t + 1);
+    };
+
+    // Explicitly request the exact face we care about so we don't wait on
+    // unrelated fonts elsewhere on the page.
+    Promise.all([
+      fonts.load('1em "Roboto Mono"').catch(() => undefined),
+      fonts.load('600 1em "Roboto Mono"').catch(() => undefined),
+      fonts.ready.catch(() => undefined),
+    ]).then(markReady);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Measure the actual line height of a word element. Recomputes on window
   // resize and whenever the container itself resizes (font-size changes,
@@ -39,7 +73,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
       window.removeEventListener("resize", measure);
       ro?.disconnect();
     };
-  }, []);
+  }, [fontTick]);
 
   // Scroll when active word moves to a new line
   useEffect(() => {
@@ -106,7 +140,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
     }
 
     setCaretPos({ left, top });
-  }, [currentWordIndex, currentInput]);
+  }, [currentWordIndex, currentInput, fontTick]);
 
   const renderedWords = useMemo(() => {
     return words.map((word, wIdx) => {
@@ -166,9 +200,18 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
   return (
     <div
       ref={containerRef}
-      className={`relative font-mono text-[1.875rem] leading-[3.5rem] max-h-[10.5rem] overflow-hidden select-none transition-opacity ${
-        isFinished ? "opacity-0" : ""
+      className={`relative font-mono text-[1.875rem] leading-[3.5rem] max-h-[10.5rem] overflow-hidden select-none transition-opacity duration-200 ${
+        isFinished || !fontReady ? "opacity-0" : "opacity-100"
       }`}
+      style={{
+        // Smooth, consistent glyph rendering across browsers so characters
+        // don't visibly re-rasterize as the font swaps in.
+        WebkitFontSmoothing: "antialiased",
+        MozOsxFontSmoothing: "grayscale",
+        textRendering: "geometricPrecision",
+        fontVariantLigatures: "none",
+        fontKerning: "none",
+      }}
     >
       {/* Smooth caret */}
       <div
@@ -178,7 +221,11 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
           height: "1.4em",
           left: `${caretPos.left}px`,
           top: `${caretPos.top}px`,
-          transition: "left 80ms ease-out, top 80ms ease-out",
+          transition: fontReady
+            ? "left 80ms ease-out, top 80ms ease-out, opacity 120ms ease-out"
+            : "none",
+          opacity: fontReady ? 1 : 0,
+          willChange: "left, top",
           background: "hsl(var(--caret))",
           boxShadow: "0 0 8px 2px hsl(var(--caret) / 0.4), 0 0 2px 0 hsl(var(--caret) / 0.6)",
         }}

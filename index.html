@@ -17,12 +17,23 @@
     <meta name="twitter:card" content="" />
     <meta name="twitter:site" content="@Lovable" />
 
-    <!-- Roboto Mono with preconnect + preload for reliable rendering -->
+    <!-- Roboto Mono with preconnect + high-priority preload for reliable rendering -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload the actual latin woff2 (used by both 400 and 600) so the font
+         is usually ready before the user starts typing. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="https://fonts.gstatic.com/s/robotomono/v31/L0x5DF4xlVMF-BfR8bXMIjhLq38.woff2"
+      crossorigin
+      fetchpriority="high"
+    />
     <link
       rel="preload"
       as="style"
+      fetchpriority="high"
       href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=block"
     />
     <link

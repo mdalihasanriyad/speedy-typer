@@ -154,9 +154,9 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
         if (isTyped || isActive) {
           if (cIdx < typedWord.length) {
             if (typedWord[cIdx] === char) {
-              className = isActive ? "char-flash-correct" : "text-text-correct";
+              className = "text-text-correct";
             } else {
-              className = isActive ? "char-shake-incorrect" : "text-text-incorrect";
+              className = "text-text-incorrect";
             }
           } else if (isTyped) {
             className = "text-text-incorrect opacity-60";
@@ -221,9 +221,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
           height: "1.4em",
           left: `${caretPos.left}px`,
           top: `${caretPos.top}px`,
-          transition: fontReady
-            ? "left 80ms ease-out, top 80ms ease-out, opacity 120ms ease-out"
-            : "none",
+          transition: fontReady ? "opacity 120ms ease-out" : "none",
           opacity: fontReady ? 1 : 0,
           willChange: "left, top",
           background: "hsl(var(--caret))",

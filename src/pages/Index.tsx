@@ -22,6 +22,7 @@ const Index = () => {
   const [customReady, setCustomReady] = useState(false);
   const [punctuation, setPunctuation] = useState(false);
   const [numbers, setNumbers] = useState(false);
+  const [caretSmoothing, setCaretSmoothing] = useState<"css" | "raf">("raf");
 
   const value = mode === "time" ? timeValue : mode === "words" ? wordValue : 0;
   const values = mode === "time" ? TIME_VALUES : WORD_VALUES;
@@ -189,6 +190,7 @@ const Index = () => {
                 typedHistory={state.typedHistory}
                 isFinished={state.isFinished}
                 isRunning={state.isRunning}
+                caretSmoothing={caretSmoothing}
               />
             </div>
 
@@ -225,6 +227,17 @@ const Index = () => {
             >
               <RotateCcw className="w-5 h-5" />
             </button>
+
+            {!state.isRunning && (
+              <button
+                type="button"
+                onClick={() => setCaretSmoothing((m) => (m === "raf" ? "css" : "raf"))}
+                className="mt-2 text-xs text-sub/70 hover:text-foreground transition-colors"
+                title="Toggle caret rendering mode"
+              >
+                caret: {caretSmoothing === "raf" ? "smooth (rAF)" : "snappy (CSS)"}
+              </button>
+            )}
 
             {/* Zen stop button */}
             {mode === "zen" && state.isRunning && (

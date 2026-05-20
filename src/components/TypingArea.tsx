@@ -7,9 +7,23 @@ interface TypingAreaProps {
   typedHistory: string[];
   isFinished: boolean;
   isRunning: boolean;
+  /**
+   * How the caret moves between positions.
+   * - "css": browser CSS transitions on left/top (cheap, snappy, slight stepping).
+   * - "raf": requestAnimationFrame lerp for a continuously smooth cursor.
+   */
+  caretSmoothing?: "css" | "raf";
 }
 
-const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFinished, isRunning }: TypingAreaProps) => {
+const TypingArea = ({
+  words,
+  currentWordIndex,
+  currentInput,
+  typedHistory,
+  isFinished,
+  isRunning,
+  caretSmoothing = "raf",
+}: TypingAreaProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeWordRef = useRef<HTMLDivElement>(null);
   const caretRef = useRef<HTMLDivElement>(null);
@@ -142,6 +156,68 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
     setCaretPos({ left, top });
   }, [currentWordIndex, currentInput, fontTick]);
 
+  // Drive caret position imperatively so we can switch between CSS transitions
+  // and a requestAnimationFrame lerp without re-rendering on every frame.
+  const currentCaretRef = useRef({ left: 0, top: 0 });
+  const rafRef = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    const el = caretRef.current;
+    if (!el) return;
+
+    if (caretSmoothing === "css") {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      el.style.transition = fontReady
+        ? "left 80ms ease-out, top 80ms ease-out, opacity 120ms ease-out"
+        : "none";
+      el.style.left = `${caretPos.left}px`;
+      el.style.top = `${caretPos.top}px`;
+      currentCaretRef.current = { ...caretPos };
+      return;
+    }
+
+    // RAF mode: disable CSS transition and lerp toward the target each frame.
+    el.style.transition = fontReady ? "opacity 120ms ease-out" : "none";
+
+    // On first paint / large jumps, snap to target to avoid a slow glide in.
+    const cur = currentCaretRef.current;
+    const dx = caretPos.left - cur.left;
+    const dy = caretPos.top - cur.top;
+    if (Math.hypot(dx, dy) > 200 || (cur.left === 0 && cur.top === 0)) {
+      currentCaretRef.current = { ...caretPos };
+      el.style.left = `${caretPos.left}px`;
+      el.style.top = `${caretPos.top}px`;
+      return;
+    }
+
+    const step = () => {
+      const c = currentCaretRef.current;
+      const nx = c.left + (caretPos.left - c.left) * 0.35;
+      const ny = c.top + (caretPos.top - c.top) * 0.35;
+      const done = Math.abs(caretPos.left - nx) < 0.25 && Math.abs(caretPos.top - ny) < 0.25;
+      const next = done ? { left: caretPos.left, top: caretPos.top } : { left: nx, top: ny };
+      currentCaretRef.current = next;
+      el.style.left = `${next.left}px`;
+      el.style.top = `${next.top}px`;
+      if (done) {
+        rafRef.current = null;
+      } else {
+        rafRef.current = requestAnimationFrame(step);
+      }
+    };
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(step);
+
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, [caretPos, caretSmoothing, fontReady]);
+
   const renderedWords = useMemo(() => {
     return words.map((word, wIdx) => {
       const isActive = wIdx === currentWordIndex;
@@ -219,9 +295,6 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
         className={`absolute w-[2.5px] rounded-sm pointer-events-none z-10 ${!isRunning ? "animate-caret-blink" : ""}`}
         style={{
           height: "1.4em",
-          left: `${caretPos.left}px`,
-          top: `${caretPos.top}px`,
-          transition: fontReady ? "opacity 120ms ease-out" : "none",
           opacity: fontReady ? 1 : 0,
           willChange: "left, top",
           background: "hsl(var(--caret))",

@@ -201,7 +201,7 @@ const TypingArea = ({ words, currentWordIndex, currentInput, typedHistory, isFin
     <div
       ref={containerRef}
       className={`relative font-mono text-[1.875rem] leading-[3.5rem] max-h-[10.5rem] overflow-hidden select-none transition-opacity duration-200 ${
-        isFinished || !fontReady ? "opacity-0" : "opacity-100"
+        isFinished ? "opacity-0" : "opacity-100"
       }`}
       style={{
         // Smooth, consistent glyph rendering across browsers so characters
